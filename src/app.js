@@ -3,7 +3,6 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const multer = require("multer");
-const fs = require("fs");
 
 const router = require("./router");
 const app = express();
@@ -14,14 +13,7 @@ app.use(cookieParser());
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = "./public/images";
-    //Dans ce code, fs.existsSync est utilisé pour vérifier si le répertoire existe.
-    //S'il n'existe pas, fs.mkdirSync est utilisé pour le créer.
-    //L'option { recursive: true } permet de créer tous les répertoires intermédiaires nécessaires.“
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    cb(null, dir);
+    return cb(null, "./public/images");
   },
   filename: (req, file, cb) => {
     return cb(null, `${Date.now()}_${file.originalname}`);
@@ -29,9 +21,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-app.post("/upload", upload.files("file"), (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
+app.post("/upload", upload.single("file"), (req, res) => {
+  console.log("body", req.body);
+  console.log("file", req.file);
 });
 
 app.get("/", (req, res) => {
