@@ -21,10 +21,16 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-app.post("/upload", upload.array("files"), (req, res) => {
-  console.log("body", req.body);
-  console.log("file", req.files);
-});
+app.post(
+  "/upload",
+  upload.fields([{ name: "image1" }, { name: "image2" }, { name: "image3" }]),
+  (req, res) => {
+    console.log("body", req.body);
+    console.log("image1", req.files["image1"][0]);
+    console.log("image2", req.files["image2"][0]);
+    console.log("image3", req.files["image3"][0]);
+  }
+);
 
 app.get("/", (req, res) => {
   res.status(200).send("on et la !");
